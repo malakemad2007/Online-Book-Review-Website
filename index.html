@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneur Stars - Literary Reviews</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600;700&family=Nothing+You+Could+Do&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --burgundy: #800020;
+            --navy: #0a2342;
+            --beige: #F5F5DC;
+            --cream: #FFF8E7;
+            --taupe: #E3DCCB;
+            --gold: #D4AF37;
+            --dark-charcoal: #333333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark-charcoal);
+            line-height: 1.6;
+        }
+
+        .handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .handwriting-alt {
+            font-family: 'Nothing You Could Do', cursive;
+        }
+
+        .serif {
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(10, 35, 66, 0.85), rgba(128, 0, 32, 0.85)), 
+                        url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Delay animations */
+        .fade-in:nth-child(1) { animation-delay: 0.2s; }
+        .fade-in:nth-child(2) { animation-delay: 0.4s; }
+        .fade-in:nth-child(3) { animation-delay: 0.6s; }
+        .fade-in:nth-child(4) { animation-delay: 0.8s; }
+        .fade-in:nth-child(5) { animation-delay: 1s; }
+
+        /* Review card styling */
+        .review-card {
+            transition: all 0.3s ease;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--burgundy);
+            transition: width 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-card:hover::before {
+            width: 8px;
+        }
+
+        /* Navigation styling */
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover:after {
+            width: 100%;
+        }
+
+        /* Button styling */
+        .btn-primary {
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        /* Section headers */
+        .section-header {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .section-header:after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 3px;
+            bottom: 0;
+            left: 20%;
+            background: linear-gradient(90deg, var(--burgundy), var(--gold), var(--burgundy));
+            border-radius: 3px;
+        }
+
+        /* Book spine effect */
+        .book-spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 8px;
+            background: linear-gradient(to bottom, var(--burgundy), var(--navy));
+        }
+
+        /* Featured book styling */
+        .featured-book {
+            background: linear-gradient(135deg, white 0%, var(--taupe) 100%);
+            border-left: 8px solid var(--burgundy);
+            position: relative;
+        }
+
+        .featured-book::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23800020' fill-opacity='0.1' d='M0 0h100v100H0V0zm10 10h80v80H10V10z'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-header:after {
+                width: 80%;
+                left: 10%;
+            }
+        }
+
+        /* Bookmark ribbon */
+        .bookmark {
+            position: absolute;
+            top: -5px;
+            right: 20px;
+            width: 40px;
+            height: 60px;
+            background-color: var(--burgundy);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+            z-index: 1;
+        }
+
+        /* Page flip effect */
+        .page-flip {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .page-flip:hover {
+            transform: rotateY(10deg);
+        }
+
+        /* Decorative elements */
+        .decorative-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--burgundy), transparent);
+            margin: 2rem 0;
+        }
+
+        /* Testimonial bubbles */
+        .testimonial-bubble {
+            position: relative;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .testimonial-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-[var(--burgundy)] handwriting">Entrepreneur Stars</div>
+            <ul class="hidden md:flex space-x-8">
+                <li><a href="#home" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Home</a></li>
+                <li><a href="#featured" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Featured</a></li>
+                <li><a href="#reviews" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Reviews</a></li>
+                <li><a href="#team" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Our Team</a></li>
+                <li><a href="#submit" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Submit</a></li>
+                <li><a href="#testimonials" class="nav-link text-[var(--navy)] hover:text-[var(--burgundy)] transition">Readers</a></li>
+            </ul>
+            <button class="md:hidden text-[var(--burgundy)]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center text-center text-white">
+        <div class="container mx-auto px-6">
+            <h1 class="hero-title text-5xl md:text-6xl font-bold mb-6 fade-in handwriting">Literary Perspectives</h1>
+            <p class="text-xl md:text-2xl mb-8 fade-in max-w-2xl mx-auto serif">"A reader lives a thousand lives before he dies. The man who never reads lives only one." - George R.R. Martin</p>
+            <div class="fade-in">
+                <a href="#reviews" class="btn-primary inline-block bg-[var(--burgundy)] text-white px-8 py-4 rounded-md hover:bg-[var(--gold)] hover:text-[var(--navy)] mr-4">Discover Reviews</a>
+                <a href="#submit" class="btn-primary inline-block bg-transparent border-2 border-white text-white px-8 py-3 rounded-md hover:bg-white hover:text-[var(--navy)]">Share Your Thoughts</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-12 bg-[var(--navy)] text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="fade-in">
+                    <div class="text-4xl font-bold mb-2 handwriting">150+</div>
+                    <p class="text-[var(--taupe)]">Books Reviewed</p>
+                </div>
+                <div class="fade-in">
+                    <div class="text-4xl font-bold mb-2 handwriting">12</div>
+                    <p class="text-[var(--taupe)]">Genres Covered</p>
+                </div>
+                <div class="fade-in">
+                    <div class="text-4xl font-bold mb-2 handwriting">5</div>
+                    <p class="text-[var(--taupe)]">Expert Reviewers</p>
+                </div>
+                <div class="fade-in">
+                    <div class="text-4xl font-bold mb-2 handwriting">10K+</div>
+                    <p class="text-[var(--taupe)]">Readers Monthly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Book Section -->
+    <section id="featured" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 fade-in section-header">Editor's Pick</h2>
+            <div class="featured-book max-w-5xl mx-auto p-8 md:p-12 rounded-lg fade-in page-flip">
+                <div class="bookmark"></div>
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="w-full md:w-1/3 flex justify-center">
+                        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Featured Book" class="w-64 h-auto shadow-xl rounded">
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h3 class="text-2xl font-bold text-[var(--navy)] mb-2 serif">"The Psychology of Money"</h3>
+                        <p class="text-lg text-[var(--burgundy)] mb-4">Morgan Housel • Reviewed by Malak</p>
+                        <div class="text-[var(--gold)] text-xl mb-4">★★★★★</div>
+                        <p class="text-gray-700 mb-6 serif">Timeless lessons on wealth, greed, and happiness. Housel's collection of short stories about how people think about money will change your perspective on personal finance. The most profound insight? Money's greatest intrinsic value is its ability to give you control over your time.</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-[var(--taupe)] text-[var(--navy)] px-3 py-1 rounded-full text-sm">Finance</span>
+                            <span class="bg-[var(--taupe)] text-[var(--navy)] px-3 py-1 rounded-full text-sm">Psychology</span>
+                            <span class="bg-[var(--taupe)] text-[var(--navy)] px-3 py-1 rounded-full text-sm">Self-Help</span>
+                        </div>
+                        <a href="#" class="btn-primary inline-block bg-[var(--navy)] text-white px-6 py-2 rounded-md hover:bg-[var(--burgundy)]">Read Full Review</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-20 bg-[var(--cream)]">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4 fade-in section-header">Latest Reviews</h2>
+            <p class="text-center text-lg text-[var(--navy)] mb-12 max-w-2xl mx-auto fade-in">Discover our most recent literary critiques and recommendations</p>
+            
+            <div class="flex justify-center mb-12 fade-in">
+                <div class="flex space-x-2 bg-white p-1 rounded-full shadow-inner">
+                    <button class="genre-filter px-4 py-2 rounded-full bg-[var(--burgundy)] text-white text-sm">All</button>
+                    <button class="genre-filter px-4 py-2 rounded-full hover:bg-[var(--taupe)] text-sm">Business</button>
+                    <button class="genre-filter px-4 py-2 rounded-full hover:bg-[var(--taupe)] text-sm">Fiction</button>
+                    <button class="genre-filter px-4 py-2 rounded-full hover:bg-[var(--taupe)] text-sm">Biography</button>
+                    <button class="genre-filter px-4 py-2 rounded-full hover:bg-[var(--taupe)] text-sm">Self-Help</button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="reviews-container">
+                <!-- Sample Review 1 -->
+                <div class="review-card p-6 rounded-lg fade-in">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-semibold text-[var(--navy)]">"The Innovator's Dilemma"</h3>
+                        <span class="text-xs bg-[var(--beige)] text-[var(--burgundy)] px-2 py-1 rounded-full">BUSINESS</span>
+                    </div>
+                    <p class="text-gray-500 text-sm mb-4">Clayton Christensen • Reviewed by Malak</p>
+                    <p class="text-gray-700 mb-4">A groundbreaking analysis of disruptive innovation that challenges conventional business wisdom. Essential reading for understanding market dynamics.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-[var(--gold)]">★★★★★</div>
+                        <button class="text-[var(--burgundy)] text-sm font-medium hover:underline">Read more</button>
+                    </div>
+                </div>
+                
+                <!-- Sample Review 2 -->
+                <div class="review-card p-6 rounded-lg fade-in">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-semibold text-[var(--navy)]">"Becoming"</h3>
+                        <span class="text-xs bg-[var(--beige)] text-[var(--burgundy)] px-2 py-1 rounded-full">MEMOIR</span>
+                    </div>
+                    <p class="text-gray-500 text-sm mb-4">Michelle Obama • Reviewed by Arwa</p>
+                    <p class="text-gray-700 mb-4">An intimate, powerful memoir that transcends politics. Obama's narrative voice is as compelling as her life story.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-[var(--gold)]">★★★★☆</div>
+                        <button class="text-[var(--burgundy)] text-sm font-medium hover:underline">Read more</button>
+                    </div>
+                </div>
+                
+                <!-- Sample Review 3 -->
+                <div class="review-card p-6 rounded-lg fade-in">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-semibold text-[var(--navy)]">"Atomic Habits"</h3>
+                        <span class="text-xs bg-[var(--beige)] text-[var(--burgundy)] px-2 py-1 rounded-full">SELF-HELP</span>
+                    </div>
+                    <p class="text-gray-500 text-sm mb-4">James Clear • Reviewed by Jinen</p>
+                    <p class="text-gray-700 mb-4">Transformative framework for building good habits and breaking bad ones. Clear's approach is both practical and scientifically grounded.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-[var(--gold)]">★★★★★</div>
+                        <button class="text-[var(--burgundy)] text-sm font-medium hover:underline">Read more</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 fade-in">
+                <a href="#" class="btn-primary inline-block border-2 border-[var(--burgundy)] text-[var(--burgundy)] px-8 py-3 rounded-md hover:bg-[var(--burgundy)] hover:text-white">View All Reviews</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-16 fade-in section-header">What Readers Say</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-bubble p-6 fade-in">
+                    <div class="text-[var(--gold)] text-xl mb-2">★★★★★</div>
+                    <p class="text-gray-700 mb-4 italic">"The reviews are insightful and well-written. I've discovered so many great books through this platform that I wouldn't have found otherwise."</p>
+                    <p class="text-[var(--burgundy)] font-semibold">— Sarah Johnson</p>
+                    <p class="text-gray-500 text-sm">Avid Reader</p>
+                </div>
+                
+                <div class="testimonial-bubble p-6 fade-in">
+                    <div class="text-[var(--gold)] text-xl mb-2">★★★★☆</div>
+                    <p class="text-gray-700 mb-4 italic">"As a busy professional, I appreciate the thoughtful analysis that helps me choose books worth my limited reading time."</p>
+                    <p class="text-[var(--burgundy)] font-semibold">— Michael Chen</p>
+                    <p class="text-gray-500 text-sm">Tech Entrepreneur</p>
+                </div>
+                
+                <div class="testimonial-bubble p-6 fade-in">
+                    <div class="text-[var(--gold)] text-xl mb-2">★★★★★</div>
+                    <p class="text-gray-700 mb-4 italic">"The reviewer's perspectives often challenge my thinking and introduce me to new genres I wouldn't normally explore."</p>
+                    <p class="text-[var(--burgundy)] font-semibold">— Aisha Mohammed</p>
+                    <p class="text-gray-500 text-sm">Book Club Leader</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-[var(--taupe)]">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4 fade-in section-header">Our Distinguished Team</h2>
+            <p class="text-center text-lg text-[var(--navy)] mb-16 max-w-2xl mx-auto fade-in">Meet the passionate readers and critics behind our reviews</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Team Member 1 -->
+                <div class="bg-white p-8 rounded-lg shadow-sm text-center fade-in transform hover:scale-105 transition duration-300">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--beige)] flex items-center justify-center text-[var(--burgundy)] text-2xl font-bold shadow-inner">ME</div>
+                    <h3 class="text-xl font-semibold mb-2 text-[var(--navy)]">Malak Emad</h3>
+                    <p class="text-[var(--burgundy)] font-medium uppercase text-sm tracking-wider mb-3">Project Lead & Developer</p>
+                    <p class="text-gray-600">Architecting our digital presence with technical precision and visionary leadership.</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">JavaScript</span>
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">UX Design</span>
+                    </div>
+                </div>
+                
+                <!-- Team Member 2 -->
+                <div class="bg-white p-8 rounded-lg shadow-sm text-center fade-in transform hover:scale-105 transition duration-300">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--beige)] flex items-center justify-center text-[var(--burgundy)] text-2xl font-bold shadow-inner">J</div>
+                    <h3 class="text-xl font-semibold mb-2 text-[var(--navy)]">Jinen</h3>
+                    <p class="text-[var(--burgundy)] font-medium uppercase text-sm tracking-wider mb-3">Chief Researcher</p>
+                    <p class="text-gray-600">Ensuring our content reflects rigorous analysis and intellectual depth.</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Analytics</span>
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Fact-Checking</span>
+                    </div>
+                </div>
+                
+                <!-- Team Member 3 -->
+                <div class="bg-white p-8 rounded-lg shadow-sm text-center fade-in transform hover:scale-105 transition duration-300">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--beige)] flex items-center justify-center text-[var(--burgundy)] text-2xl font-bold shadow-inner">AC</div>
+                    <h3 class="text-xl font-semibold mb-2 text-[var(--navy)]">Antotidaishe Chinyadza</h3>
+                    <p class="text-[var(--burgundy)] font-medium uppercase text-sm tracking-wider mb-3">Literary Critic & Designer</p>
+                    <p class="text-gray-600">Crafting compelling reviews and our visual identity with artistic sensibility.</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Criticism</span>
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Graphic Design</span>
+                    </div>
+                </div>
+                
+                <!-- Team Member 4 -->
+                <div class="bg-white p-8 rounded-lg shadow-sm text-center fade-in transform hover:scale-105 transition duration-300">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--beige)] flex items-center justify-center text-[var(--burgundy)] text-2xl font-bold shadow-inner">AM</div>
+                    <h3 class="text-xl font-semibold mb-2 text-[var(--navy)]">Arwa Mokhtar</h3>
+                    <p class="text-[var(--burgundy)] font-medium uppercase text-sm tracking-wider mb-3">Principal Presenter</p>
+                    <p class="text-gray-600">Articulating our mission with eloquence and persuasive communication.</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Public Speaking</span>
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Editing</span>
+                    </div>
+                </div>
+                
+                <!-- Team Member 5 -->
+                <div class="bg-white p-8 rounded-lg shadow-sm text-center fade-in transform hover:scale-105 transition duration-300">
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-[var(--beige)] flex items-center justify-center text-[var(--burgundy)] text-2xl font-bold shadow-inner">MA</div>
+                    <h3 class="text-xl font-semibold mb-2 text-[var(--navy)]">Mariam Aboelkasem</h3>
+                    <p class="text-[var(--burgundy)] font-medium uppercase text-sm tracking-wider mb-3">Developer & Research Analyst</p>
+                    <p class="text-gray-600">Bridging technical implementation with evidence-based insights.</p>
+                    <div class="mt-4 flex justify-center space-x-3">
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Python</span>
+                        <span class="bg-[var(--cream)] text-[var(--navy)] px-2 py-1 rounded-full text-xs">Data Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Review Section -->
+    <section id="submit" class="py-20 bg-[var(--navy)] text-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-4 fade-in section-header">Contribute Your Review</h2>
+                <p class="text-center text-lg mb-12 max-w-2xl mx-auto fade-in">Share your literary perspectives with our community of readers</p>
+                
+                <div class="bg-white p-8 md:p-10 rounded-lg shadow-lg fade-in">
+                    <form id="review-form" class="space-y-6 text-[var(--navy)]">
+                        <div>
+                            <label for="book-title" class="block text-sm font-medium mb-2">Book Title *</label>
+                            <input type="text" id="book-title" class="w-full px-4 py-3 border border-[var(--taupe)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="author" class="block text-sm font-medium mb-2">Author *</label>
+                                <input type="text" id="author" class="w-full px-4 py-3 border border-[var(--taupe)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]" required>
+                            </div>
+                            
+                            <div>
+                                <label for="genre" class="block text-sm font-medium mb-2">Genre *</label>
+                                <select id="genre" class="w-full px-4 py-3 border border-[var(--taupe)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]">
+                                    <option value="fiction">Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                    <option value="biography">Biography</option>
+                                    <option value="business">Business</option>
+                                    <option value="self-help">Self-Help</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="reviewer" class="block text-sm font-medium mb-2">Your Name *</label>
+                            <input type="text" id="reviewer" class="w-full px-4 py-3 border border-[var(--taupe)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]" required>
+                        </div>
+                        
+                        <div>
+                            <label for="review-text" class="block text-sm font-medium mb-2">Your Review *</label>
+                            <textarea id="review-text" rows="5" class="w-full px-4 py-3 border border-[var(--taupe)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]" required></textarea>
+                            <p class="text-xs text-gray-500 mt-1">Minimum 200 characters</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-3">Rating *</label>
+                            <div class="flex space-x-2">
+                                <button type="button" class="rating-star text-2xl hover:text-[var(--gold)]" data-value="1">☆</button>
+                                <button type="button" class="rating-star text-2xl hover:text-[var(--gold)]" data-value="2">☆</button>
+                                <button type="button" class="rating-star text-2xl hover:text-[var(--gold)]" data-value="3">☆</button>
+                                <button type="button" class="rating-star text-2xl hover:text-[var(--gold)]" data-value="4">☆</button>
+                                <button type="button" class="rating-star text-2xl hover:text-[var(--gold)]" data-value="5">☆</button>
+                            </div>
+                            <input type="hidden" id="rating" value="0" required>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="consent" class="mr-2" required>
+                            <label for="consent" class="text-sm">I agree to have my review published on this platform</label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary w-full bg-[var(--burgundy)] text-white px-6 py-4 rounded-lg hover:bg-[var(--gold)] hover:text-[var(--navy)] font-medium tracking-wide">
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-16 bg-[var(--cream)] border-t border-[var(--taupe)]">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold mb-6 fade-in section-header">Stay Updated</h2>
+            <p class="text-lg mb-8 max-w-2xl mx-auto fade-in">Subscribe to receive our monthly selection of book reviews and literary insights</p>
+            
+            <form class="max-w-md mx-auto flex fade-in">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-l-lg border border-r-0 border-[var(--taupe)] focus:outline-none focus:ring-2 focus:ring-[var(--burgundy)]">
+                <button type="submit" class="bg-[var(--burgundy)] text-white px-6 py-3 rounded-r-lg hover:bg-[var(--navy)] transition">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--navy)] text-[var(--taupe)] py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start">
+                <div class="mb-8 md:mb-0">
+                    <div class="text-2xl font-bold text-white handwriting mb-4">Entrepreneur Stars</div>
+                    <p class="max-w-md mb-4">A literary initiative by Star Girls Africa</p>
+                    <p class="text-sm">Bringing thoughtful perspectives to the world of books and ideas</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 class="text-white font-semibold mb-4">Explore</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#home" class="hover:text-white transition">Home</a></li>
+                            <li><a href="#reviews" class="hover:text-white transition">Reviews</a></li>
+                            <li><a href="#team" class="hover:text-white transition">Our Team</a></li>
+                            <li><a href="#submit" class="hover:text-white transition">Submit Review</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text
+
+
+                        <div>
+                            <h3 class="text-white font-semibold mb-4">Connect</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="hover:text-white transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            <p class="mt-4 text-sm">contact@entrepreneurstars.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-[var(--taupe)] mt-8 pt-8 text-center text-sm">
+                    <p>&copy; 2023 Entrepreneur Stars Literary Review. All rights reserved.</p>
+                    <p class="mt-2">Created with passion by the Entrepreneur Stars team at Star Girls Africa</p>
+                </div>
+            </div>
+        </footer>
+        
+        <script>
+            // Enhanced book reviews data
+            const sampleReviews = [
+                {
+                    title: "The Innovator's Dilemma",
+                    author: "Clayton Christensen",
+                    reviewer: "Malak Emad",
+                    genre: "business",
+                    review: "A groundbreaking analysis of disruptive innovation that challenges conventional business wisdom. Essential reading for understanding why great companies fail and how to anticipate market changes.",
+                    rating: 5,
+                    date: "2023-05-15"
+                },
+                {
+                    title: "Becoming",
+                    author: "Michelle Obama",
+                    reviewer: "Arwa Mokhtar",
+                    genre: "biography",
+                    review: "An intimate, powerful memoir that transcends politics. Obama's narrative voice is as compelling as her life story, offering profound insights about identity, achievement, and purpose.",
+                    rating: 4,
+                    date: "2023-04-22"
+                },
+                {
+                    title: "Atomic Habits",
+                    author: "James Clear",
+                    reviewer: "Jinen",
+                    genre: "self-help",
+                    review: "Transformative framework for building good habits and breaking bad ones. Clear's approach is both practical and scientifically grounded, emphasizing small changes that yield remarkable results.",
+                    rating: 5,
+                    date: "2023-06-10"
+                },
+                {
+                    title: "The Midnight Library",
+                    author: "Matt Haig",
+                    reviewer: "Antotidaishe Chinyadza",
+                    genre: "fiction",
+                    review: "A poignant exploration of regret and possibility. Haig's novel takes readers on an emotional journey through infinite lives that might have been, ultimately celebrating the beauty of our actual existence.",
+                    rating: 4,
+                    date: "2023-03-18"
+                }
+            ];
+        
+            // Initialize the page
+            document.addEventListener('DOMContentLoaded', function() {
+                displayReviews();
+                setupRatingStars();
+                setupFormValidation();
+                setupAnimations();
+                setupSmoothScrolling();
+                setupMobileMenu();
+                setupGenreFilters();
+            });
+        
+            // Display reviews function
+            function displayReviews(filterGenre = 'all') {
+                const reviewsContainer = document.getElementById('reviews-container');
+                
+                // Clear existing reviews (except the samples in HTML)
+                while (reviewsContainer.children.length > 3) {
+                    reviewsContainer.removeChild(reviewsContainer.lastChild);
+                }
+                
+                // Get reviews from localStorage or use sample reviews
+                let reviews = JSON.parse(localStorage.getItem('bookReviews')) || sampleReviews;
+                
+                // Filter by genre if needed
+                if (filterGenre !== 'all') {
+                    reviews = reviews.filter(review => review.genre === filterGenre);
+                }
+                
+                // Sort by date (newest first)
+                reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // Display each review
+                reviews.forEach(review => {
+                    const reviewCard = document.createElement('div');
+                    reviewCard.className = 'review-card p-6 rounded-lg fade-in';
+                    
+                    // Convert rating number to star symbols
+                    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                    
+                    // Format date
+                    const formattedDate = new Date(review.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    reviewCard.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-xl font-semibold text-[var(--navy)]">"${review.title}"</h3>
+                            <span class="text-xs bg-[var(--beige)] text-[var(--burgundy)] px-2 py-1 rounded-full">${review.genre.toUpperCase()}</span>
+                        </div>
+                        <p class="text-gray-500 text-sm mb-2">${review.author} • Reviewed by ${review.reviewer}</p>
+                        <p class="text-gray-500 text-xs mb-4">${formattedDate}</p>
+                        <p class="text-gray-700 mb-4">${review.review.substring(0, 150)}${review.review.length > 150 ? '...' : ''}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="text-[var(--gold)]">${stars}</div>
+                            <button class="text-[var(--burgundy)] text-sm font-medium hover:underline">Read more</button>
+                        </div>
+                    `;
+                    
+                    reviewsContainer.appendChild(reviewCard);
+                });
+            }
+        
+            // Setup rating stars interaction
+            function setupRatingStars() {
+                const stars = document.querySelectorAll('.rating-star');
+                
+                stars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        const value = parseInt(this.getAttribute('data-value'));
+                        document.getElementById('rating').value = value;
+                        
+                        // Update star display
+                        stars.forEach((s, index) => {
+                            if (index < value) {
+                                s.textContent = '★';
+                                s.style.color = 'var(--gold)';
+                            } else {
+                                s.textContent = '☆';
+                                s.style.color = '';
+                            }
+                        });
+                    });
+                    
+                    star.addEventListener('mouseover', function() {
+                        const value = parseInt(this.getAttribute('data-value'));
+                        
+                        stars.forEach((s, index) => {
+                            if (index < value) {
+                                s.style.color = 'var(--gold)';
+                            }
+                        });
+                    });
+                    
+                    star.addEventListener('mouseout', function() {
+                        const currentRating = parseInt(document.getElementById('rating').value);
+                        
+                        stars.forEach((s, index) => {
+                            if (index >= currentRating) {
+                                s.style.color = '';
+                            }
+                        });
+                    });
+                });
+            }
+        
+            // Form submission handler
+            function setupFormValidation() {
+                const form = document.getElementById('review-form');
+                
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Validate form
+                    const title = document.getElementById('book-title').value.trim();
+                    const author = document.getElementById('author').value.trim();
+                    const reviewer = document.getElementById('reviewer').value.trim();
+                    const reviewText = document.getElementById('review-text').value.trim();
+                    const rating = parseInt(document.getElementById('rating').value);
+                    const genre = document.getElementById('genre').value;
+                    const consent = document.getElementById('consent').checked;
+                    
+                    if (!title || !author || !reviewer || !reviewText || !rating || !consent) {
+                        alert('Please complete all required fields and agree to the terms');
+                        return;
+                    }
+                    
+                    if (reviewText.length < 200) {
+                        alert('Your review should be at least 200 characters long');
+                        return;
+                    }
+                    
+                    // Create new review object
+                    const newReview = {
+                        title,
+                        author,
+                        reviewer,
+                        genre,
+                        review: reviewText,
+                        rating,
+                        date: new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+                    };
+                    
+                    // Get existing reviews from localStorage or use sample reviews
+                    let reviews = JSON.parse(localStorage.getItem('bookReviews')) || sampleReviews;
+                    
+                    // Add new review
+                    reviews.push(newReview);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('bookReviews', JSON.stringify(reviews));
+                    
+                    // Refresh displayed reviews
+                    displayReviews();
+                    
+                    // Reset form
+                    form.reset();
+                    document.getElementById('rating').value = 0;
+                    document.querySelectorAll('.rating-star').forEach(star => {
+                        star.textContent = '☆';
+                        star.style.color = '';
+                    });
+                    
+                    // Show success message
+                    alert('Thank you for your thoughtful review! It has been published successfully.');
+                    
+                    // Scroll to reviews section
+                    document.getElementById('reviews').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        
+            // Animation setup
+            function setupAnimations() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('fade-in');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                document.querySelectorAll('.fade-in').forEach(element => {
+                    observer.observe(element);
+                });
+            }
+        
+            // Smooth scrolling for navigation
+            function setupSmoothScrolling() {
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            }
+        
+            // Mobile menu toggle
+            function setupMobileMenu() {
+                const mobileMenuButton = document.querySelector('header button');
+                const nav = document.querySelector('header ul');
+                
+                mobileMenuButton.addEventListener('click', function() {
+                    nav.classList.toggle('hidden');
+                    nav.classList.toggle('flex');
+                    nav.classList.toggle('flex-col');
+                    nav.classList.toggle('absolute');
+                    nav.classList.toggle('top-16');
+                    nav.classList.toggle('left-0');
+                    nav.classList.toggle('right-0');
+                    nav.classList.toggle('bg-white');
+                    nav.classList.toggle('p-4');
+                    nav.classList.toggle('shadow-md');
+                });
+            }
+        
+            // Genre filter functionality
+            function setupGenreFilters() {
+                const genreButtons = document.querySelectorAll('.genre-filter');
+                
+                genreButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Update active button styling
+                        genreButtons.forEach(btn => {
+                            btn.classList.remove('bg-[var(--burgundy)]', 'text-white');
+                            btn.classList.add('hover:bg-[var(--taupe)]');
+                        });
+                        
+                        this.classList.add('bg-[var(--burgundy)]', 'text-white');
+                        this.classList.remove('hover:bg-[var(--taupe)]');
+                        
+                        // Get genre to filter by
+                        let genre = 'all';
+                        if (this.textContent.toLowerCase() !== 'all') {
+                            genre = this.textContent.toLowerCase();
+                        }
+                        
+                        // Display filtered reviews
+                        displayReviews(genre);
+                    });
+                });
+            }
+        </script>
+
+    </body>
+</html>
